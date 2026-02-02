@@ -1,19 +1,19 @@
 OPTS = -Wall -Wextra -O3 -std=c++0x
 
-all: bubbleSort bubbleSort.CPUtimes graphs
+all: quickSort quickSort.CPUtimes graphs
 
-graphs: bubbleSort.CPUtimes bubbleSort.gpi
-	gnuplot bubbleSort.gpi
+graphs: quickSort.CPUtimes quickSort.gpi
+	gnuplot quickSort.gpi
 
-bubbleSort: bubbleSort.cc
-	g++ ${OPTS} -o bubbleSort bubbleSort.cc	 
+quickSort: quickSort.cc
+	g++ ${OPTS} -o quickSort quickSort.cc	 
 
-bubbleSort.CPUtimes: bubbleSort
-	./bubbleSort > bubbleSort.CPUtimes
+quickSort.CPUtimes: quickSort
+	./quickSort > quickSort.CPUtimes
 
-tar: bubbleSort.cc bubbleSort.gpi makefile
-	tar cvfz mi_DNI-NIE.tar.gz bubbleSort.cc bubbleSort.gpi makefile
+tar: quickSort.cc quickSort.gpi makefile
+	tar cvfz mi_DNI-NIE.tar.gz quickSort.cc quickSort.gpi makefile
 
 clean: 
-	rm -f bubbleSort bubbleSort.CPUtimes fit.log bubbleSort*.png *~
+	rm -f quickSort quickSort.CPUtimes fit.log quickSort*.png *~
  

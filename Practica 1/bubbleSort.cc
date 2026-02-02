@@ -65,5 +65,3 @@ int main(void){
         delete[] v; 
     }
 }
-
-
