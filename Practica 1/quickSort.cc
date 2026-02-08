@@ -1,4 +1,6 @@
-/*
+/*Adrián David Ruiz Cantillo
+01888198J
+
 ADA 2025-26
 Práctica 1: "Empirical analysis of Quicksort average-time complexity."
 */

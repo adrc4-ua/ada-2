@@ -1,3 +1,6 @@
+#Adrián David Ruiz Cantillo
+#01888198J
+
 OPTS = -Wall -Wextra -O3 -std=c++0x
 
 all: quickSort quickSort.CPUtimes graphs
@@ -12,7 +15,7 @@ quickSort.CPUtimes: quickSort
 	./quickSort > quickSort.CPUtimes
 
 tar: quickSort.cc quickSort.gpi makefile
-	tar cvfz mi_DNI-NIE.tar.gz quickSort.cc quickSort.gpi makefile
+	tar cvfz 01888198J.tar.gz quickSort.cc quickSort.gpi makefile
 
 clean: 
 	rm -f quickSort quickSort.CPUtimes fit.log quickSort*.png *~

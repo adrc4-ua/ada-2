@@ -1,3 +1,6 @@
+#Adrian David Ruiz Cantillo
+#01888198J
+
 set terminal png
 set output "quickSort.png"
 
