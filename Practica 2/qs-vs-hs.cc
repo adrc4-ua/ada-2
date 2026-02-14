@@ -9,7 +9,8 @@ Practice 2: "Empirical analysis by means of program-steps account of two sorting
 
 using namespace std;
 
-float contador = 0;
+double contadorQ = 0;
+double contadorH = 0;
 
 //--------------------------------------------------------------
 // Middle-Quicksort:
@@ -33,15 +34,15 @@ void middle_QuickSort(int *v, long left, long right)
         // pivot based partitioning:
         do
         {
-            contador++;
+            contadorQ++;
             while (v[i] < pivot)
             {
-                contador++;
+                contadorQ++;
                 i++;
             }
             while (v[j] > pivot)
             {
-                contador++;
+                contadorQ++;
                 j--;
             }
             if (i <= j)
@@ -78,6 +79,8 @@ void sink(int *v, size_t n, size_t i)
 
     do
     {
+        contadorH++;
+
         largest = i;   // Initialize largest as root
         l = 2 * i + 1; // left = 2*i + 1
         r = 2 * i + 2; // right = 2*i + 2
@@ -94,7 +97,6 @@ void sink(int *v, size_t n, size_t i)
         if (largest == i)
             break;
 
-        contador++;
         // Otherwise, swap the new largest with the current node i and repeat the process with the children
         swap(v[i], v[largest]);
         i = largest;
@@ -129,58 +131,94 @@ void heapSort(int *v, size_t n)
 
 int main()
 {
-    cout << "# QUICKSORT VERSUS HEAPSORT.\n"
-            "# Average processing Msteps (millions of program steps)\n"
-            "# Number of samples (arrays of integer): 30\n"
-            "# RANDOM ARRAYS SORTED ARRAYS REVERSE SORTED ARRAYS\n"
-            "# ------------------- ------------------- ---------------------\n"
-            "# Size QuickSort HeapSort QuickSort HeapSort QuickSort HeapSort\n"
-            "#============================================================================"
+    cout << "# QUICKSORT VERSUS HEAPSORT #\n"
+            "#Average processing Msteps(millions of program steps)\n"
+            "#Number of samples(arrays of integer) : 30\n"
+            "#\t\t   RANDOM ARRAYS\t\t   SORTED ARRAYS\t      REVERSE SORTED ARRAYS\n"
+            "#\t     ------------------------\t     ------------------------\t    -------------------------\n"
+            "#Size          QuickSort       HeapSort        QuickSort       HeapSort       QuickSort        HeapSort\n"
+            "#======================================================================================================"
          << endl;
 
     for (int exp = 15; exp <= 20; exp++)
     {
         size_t size = size_t(pow(2, exp));
-        int *v = new int[size];
-        if (!v)
+
+        int *vq = new int[size];
+        if (!vq)
         {
             cerr << "Error, not enough memory!" << endl;
             exit(EXIT_FAILURE);
         }
 
-        cout << size << "\t";
+        int *vh = new int[size];
+        if (!vh)
+        {
+            cerr << "Error, not enough memory!" << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        cout << size;
 
         for (int i = 0; i < 3; i++)
         {
-            contador = 0;
+            contadorQ = 0;
+            contadorH = 0;
+
             switch (i)
             {
-            case 0: // Vector ordenado (creciente)
-                for (size_t j = 0; j < size; j++)
-                    v[j] = j;
-
-                middle_QuickSort(v, 0, size - 1);
-                cout << fixed << setprecision(3) << (contador / 1000000) << "\t";
-
-                contador = 0;
-
-                heapSort(v, size);
-                cout << (contador / 1000000) << endl;
-
-            case 1: // Vector ordenado (decreciente)
-                for (size_t j = size; j > size; j--)
-                    v[j] = j;
-
-            case 2: // Vector aleatorio
-                for (int i = 0; i <= 30; i++)
+            case 0: // Vector aleatorio
+                for (int k = 0; k < 30; k++)
                 {
                     for (size_t j = 0; j < size; j++)
-                        v[j] = rand();
+                    {
+                        int num = rand();
+                        vq[j] = num;
+                        vh[j] = num;
+                    }
+
+                    middle_QuickSort(vq, 0, size - 1);
+                    heapSort(vh, size);
                 }
+
+                cout << fixed << setprecision(3) << "\t\t" << ((contadorQ / 1000000) / 30);
+                cout << "\t\t" << ((contadorH / 1000000) / 30);
+                break;
+
+            case 1: // Vector ordenado (creciente)
+                for (size_t j = 0; j < size; j++)
+                {
+                    vq[j] = j;
+                    vh[j] = j;
+                }
+
+                middle_QuickSort(vq, 0, size - 1);
+                cout << "\t\t" << (contadorQ / 1000000);
+
+                heapSort(vh, size);
+                cout << "\t\t" << (contadorH / 1000000);
+                break;
+
+            case 2: // Vector ordenado (decreciente)
+                for (size_t j = 0; j < size; j++)
+                {
+                    vq[j] = size - j;
+                    vh[j] = size - j;
+                }
+
+                middle_QuickSort(vq, 0, size - 1);
+                cout << "\t\t" << (contadorQ / 1000000);
+
+                heapSort(vh, size);
+                cout << "\t\t" << (contadorH / 1000000) << endl;
+                break;
+
             default:
                 break;
             }
         }
+        delete[] vq;
+        delete[] vh;
     }
     return 0;
 }
