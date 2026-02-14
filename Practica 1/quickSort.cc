@@ -73,7 +73,7 @@ int main(void)
 
         auto start = 0;
         auto end = 0;
-        for (int i = 0; i <= 30; i++)
+        for (int i = 0; i < 30; i++)
         {
             for (size_t j = 0; j < size; j++)
                 v[j] = rand();
