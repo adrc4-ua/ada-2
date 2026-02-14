@@ -1,0 +1,86 @@
+#Adrián David Ruiz Cantillo
+#01888198J
+
+set terminal png
+
+#################################################################################################################
+
+##Primer grafico: quickSort
+
+set output "quickSort.png"
+set title "Quicksort"
+set xlabel "size of arrays"
+set ylabel "Millions of program steps"
+
+set xrange [2**16: 2**20]  
+
+set xtics ("2^{16}" 2**16, "2^{17}" 2**17, "2^{18}" 2**18, "2^{19}" 2**19, "2^{20}" 2**20)
+
+plot "qs-vs-hs.Msteps" using 1:2 with lines title "random arrays", \
+"qs-vs-hs.Msteps" using 1:4 with lines title "sorted arrays", \
+"qs-vs-hs.Msteps" using 1:6 with lines title "reverse-sorted arrays"
+
+#################################################################################################################
+
+##Segundo grafico: Heapsort
+
+set output "heapSort.png"
+set title "Heapsort"
+
+plot "qs-vs-hs.Msteps" using 1:3 with lines title "random arrays", \
+"qs-vs-hs.Msteps" using 1:5 with lines title "sorted arrays", \
+"qs-vs-hs.Msteps" using 1:7 with lines title "reverse-sorted arrays"
+
+#################################################################################################################
+
+##Tercer grafico: Quicksort versus Heapsort (random arrays)
+
+set output "qs-vs-hs-RA.png"
+set title "Quicksort versus Heapsort (random arrays)"
+
+FQuicksort(x)= (a*x) * log(x)
+FHeapsort(x)= (b*x) * log(x)
+
+fit FQuicksort(x) "qs-vs-hs.Msteps" using 1:2 via a
+fit FHeapsort(x) "qs-vs-hs.Msteps" using 1:3 via b
+
+plot "qs-vs-hs.Msteps" using 1:2 with lines title "Quicksort", \
+"qs-vs-hs.Msteps" using 1:3 with lines title "Heapsort", \
+FQuicksort(x) title "fitting Quicksort time to values to...", \
+FHeapsort(x) title "fitting Heapsort time to values to..."
+
+#################################################################################################################
+
+##Cuarto grafico: Quicksort versus Heapsort (sorted arrays)
+
+set output "qs-vs-hs-SA.png"
+set title "Quicksort versus Heapsort (sorted arrays)"
+
+FQuicksort(x)= (a*x) * log(x)
+FHeapsort(x)= (b*x) * log(x)
+
+fit FQuicksort(x) "qs-vs-hs.Msteps" using 1:4 via a
+fit FHeapsort(x) "qs-vs-hs.Msteps" using 1:5 via b
+
+plot "qs-vs-hs.Msteps" using 1:4 with lines title "Quicksort", \
+"qs-vs-hs.Msteps" using 1:5 with lines title "Heapsort", \
+FQuicksort(x) title "fitting Quicksort time to values to...", \
+FHeapsort(x) title "fitting Heapsort time to values to..."
+
+#################################################################################################################
+
+##Quinto grafico: Quicksort versus Heapsort (reverse-sorted arrays)
+
+set output "qs-vs-hs-RSA.png"
+set title "Quicksort versus Heapsort (reverse-sorted arrays)"
+
+FQuicksort(x)= (a*x) * log(x)
+FHeapsort(x)= (b*x) * log(x)
+
+fit FQuicksort(x) "qs-vs-hs.Msteps" using 1:6 via a
+fit FHeapsort(x) "qs-vs-hs.Msteps" using 1:7 via b
+
+plot "qs-vs-hs.Msteps" using 1:6 with lines title "Quicksort", \
+"qs-vs-hs.Msteps" using 1:7 with lines title "Heapsort", \
+FQuicksort(x) title "fitting Quicksort time to values to...", \
+FHeapsort(x) title "fitting Heapsort time to values to..."

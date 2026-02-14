@@ -1,4 +1,6 @@
-/*
+/*Adrián David Ruiz Cantillo
+01888198J
+
 ADA. 2025-26
 Practice 2: "Empirical analysis by means of program-steps account of two sorting algorithms: Middle-Quicksort and Heapsort."
 */
