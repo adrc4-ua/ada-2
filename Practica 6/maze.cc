@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
 {
     vector<vector<char>> matriz;
     int n = 0, m = 0;
-    bool arg[4] = {false, false, false};
+    bool arg[4] = {false};
 
     if (argc <= 1)
     {
