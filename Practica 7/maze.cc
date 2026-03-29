@@ -240,6 +240,8 @@ int main(int argc, char *argv[])
         }
     }
 
+    // Gestión de opciones
+
     if (arg[3] == false) // -f
     {
         cerr << "ERROR: missing filename." << endl;
@@ -290,9 +292,8 @@ int main(int argc, char *argv[])
 
     if (arg[2] == true) // -t
     {
-        cout << "Memoization table:" << endl;
-        maze_parser(matriz, memo, n, m, 1);
-
+        // cout << "Memoization table:" << endl;
+        // maze_parser(matriz, memo, n, m, 1);
         cout << "?" << endl;
     }
 
