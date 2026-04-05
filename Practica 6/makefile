@@ -12,4 +12,4 @@ tar: maze.cc makefile
 	tar cvfz 01888198J.tar.gz maze.cc makefile
 
 clean: 
-	rm maze 01888198J.tar.gz
+	rm maze

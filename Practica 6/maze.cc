@@ -88,11 +88,137 @@ int maze_memo(const vector<vector<char>> &matriz, vector<vector<int>> &memo, int
     }
 }
 
-void maze_parser(const vector<vector<char>> &matriz, const vector<vector<int>> &memo, const int n, const int m, int caso)
+int maze_it_matrix(const vector<vector<char>> &matriz, vector<vector<int>> &almacen, int n, int m)
+{
+    if (matriz[0][0] == '1')
+    {
+        almacen[0][0] = 1;
+    }
+    else
+    {
+        return 0;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (matriz[i][j] == '0')
+            {
+                almacen[i][j] = -2;
+                continue;
+            }
+
+            if (i == 0 && j == 0)
+            {
+                continue;
+            }
+
+            int min_previo = MAX;
+
+            if (i > 0 && almacen[i - 1][j] != -2)
+            {
+                min_previo = min(min_previo, almacen[i - 1][j]);
+            }
+
+            if (j > 0 && almacen[i][j - 1] != -2)
+            {
+                min_previo = min(min_previo, almacen[i][j - 1]);
+            }
+
+            if (i > 0 && j > 0 && almacen[i - 1][j - 1] != -2)
+            {
+                min_previo = min(min_previo, almacen[i - 1][j - 1]);
+            }
+
+            if (min_previo != MAX)
+            {
+                almacen[i][j] = min_previo + 1;
+            }
+            else
+            {
+                almacen[i][j] = -2;
+            }
+        }
+    }
+
+    if (almacen[n - 1][m - 1] == -2)
+    {
+        return 0;
+    }
+
+    return almacen[n - 1][m - 1];
+}
+
+int maze_it_vector(const vector<vector<char>> &matriz, int n, int m)
+{
+    if (matriz[0][0] == '0')
+    {
+        return 0;
+    }
+
+    vector<int> v0(m, -1);
+    vector<int> v1(m, -1);
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            if (matriz[i][j] == '0')
+            {
+                v1[j] = -2;
+                continue;
+            }
+
+            if (i == 0 && j == 0)
+            {
+                v1[j] = 1;
+                continue;
+            }
+
+            int min_previo = MAX;
+
+            if (i > 0 && v0[j] != -2)
+            {
+                min_previo = min(min_previo, v0[j]);
+            }
+
+            if (j > 0 && v1[j - 1] != -2)
+            {
+                min_previo = min(min_previo, v1[j - 1]);
+            }
+
+            if (i > 0 && j > 0 && v0[j - 1] != -2)
+            {
+                min_previo = min(min_previo, v0[j - 1]);
+            }
+
+            if (min_previo != MAX)
+            {
+                v1[j] = min_previo + 1;
+            }
+            else
+            {
+                v1[j] = -2;
+            }
+        }
+
+        swap(v0, v1);
+    }
+
+    if (v0[m - 1] == -2 || v0[m - 1] == -1)
+    {
+        return 0;
+    }
+
+    return v0[m - 1];
+}
+
+void maze_parser(const vector<vector<char>> &matriz, const vector<vector<int>> &almacen, const int n, const int m, int caso)
 {
     if (caso == 0)
     {
-        if (memo[n - 1][m - 1] < 1 || memo[n - 1][m - 1] >= MAX)
+        if (almacen[n - 1][m - 1] < 1 || almacen[n - 1][m - 1] >= MAX)
         {
             cout << 0 << endl;
             return;
@@ -104,7 +230,7 @@ void maze_parser(const vector<vector<char>> &matriz, const vector<vector<int>> &
 
         while (f >= 0 && c >= 0)
         {
-            int actual = memo[f][c];
+            int actual = almacen[f][c];
             aux[f][c] = '*';
 
             if (f == 0 && c == 0)
@@ -112,16 +238,16 @@ void maze_parser(const vector<vector<char>> &matriz, const vector<vector<int>> &
                 break;
             }
 
-            if (f > 0 && c > 0 && memo[f - 1][c - 1] == actual - 1)
+            if (f > 0 && c > 0 && almacen[f - 1][c - 1] == actual - 1)
             {
                 f--;
                 c--;
             }
-            else if (f > 0 && memo[f - 1][c] == actual - 1)
+            else if (f > 0 && almacen[f - 1][c] == actual - 1)
             {
                 f--;
             }
-            else if (c > 0 && memo[f][c - 1] == actual - 1)
+            else if (c > 0 && almacen[f][c - 1] == actual - 1)
             {
                 c--;
             }
@@ -146,17 +272,17 @@ void maze_parser(const vector<vector<char>> &matriz, const vector<vector<int>> &
         {
             for (int columna = 0; columna < m; columna++)
             {
-                if (memo[fila][columna] == -1)
+                if (almacen[fila][columna] == -1)
                 {
                     cout << "-";
                 }
-                else if (memo[fila][columna] == -2)
+                else if (almacen[fila][columna] == -2)
                 {
                     cout << "X";
                 }
                 else
                 {
-                    cout << memo[fila][columna];
+                    cout << almacen[fila][columna];
                 }
                 if (columna < m - 1)
                 {
@@ -173,10 +299,11 @@ int main(int argc, char *argv[])
     vector<vector<char>> matriz;
     int n = 0, m = 0;
     bool arg[4] = {false};
+    string fichero = "";
 
     if (argc <= 1)
     {
-        cerr << "Usage:\nmaze [-t] [--ignore-naive] -f file [--p2D]" << endl;
+        cerr << "Usage:\nmaze [--p2D] [-t] [--ignore-naive] -f file" << endl;
         return 0;
     }
 
@@ -200,42 +327,17 @@ int main(int argc, char *argv[])
             if (argv[i + 1] == NULL)
             {
                 cerr << "ERROR: missing filename." << endl;
-                cerr << "Usage:\nmaze [-t] [--ignore-naive] -f file [--p2D]" << endl;
+                cerr << "Usage:\nmaze [--p2D] [-t] [--ignore-naive] -f file" << endl;
                 return 0;
             }
 
-            string fichero = argv[i + 1];
-            ifstream fe(fichero);
-
-            if (!fe.is_open())
-            {
-                cerr << "ERROR: can't open file: " << fichero << "." << endl;
-                cerr << "Usage:\nmaze [-t] [--ignore-naive] -f file [--p2D]" << endl;
-                return 0;
-            }
-
-            fe >> n >> m;
-            getline(fe, fichero);
-
-            matriz.resize(n, vector<char>(m));
-
-            for (int fila = 0; fila < n; fila++)
-            {
-                for (int col = 0; col < m; col++)
-                {
-                    if (!(fe >> matriz[fila][col]))
-                    {
-                        break;
-                    }
-                }
-            }
-            fe.close();
+            fichero = argv[i + 1];
             i++;
         }
         else
         {
             cerr << "ERROR: unknown option " << argv[i] << "." << endl;
-            cerr << "Usage:\nmaze [-t] [--ignore-naive] -f file [--p2D]" << endl;
+            cerr << "Usage:\nmaze [--p2D] [-t] [--ignore-naive] -f file" << endl;
             return 0;
         }
     }
@@ -245,15 +347,38 @@ int main(int argc, char *argv[])
     if (arg[3] == false) // -f
     {
         cerr << "ERROR: missing filename." << endl;
-        cerr << "Usage:\nmaze [-t] [--ignore-naive] -f file [--p2D]" << endl;
-
+        cerr << "Usage:\nmaze [--p2D] [-t] [--ignore-naive] -f file" << endl;
         return 0;
     }
+
+    ifstream fe(fichero);
+
+    if (!fe.is_open())
+    {
+        cerr << "ERROR: can't open file: " << fichero << "." << endl;
+        cerr << "Usage:\nmaze [--p2D] [-t] [--ignore-naive] -f file" << endl;
+        return 0;
+    }
+
+    fe >> n >> m;
+
+    matriz.resize(n, vector<char>(m));
+
+    for (int fila = 0; fila < n; fila++)
+    {
+        for (int col = 0; col < m; col++)
+        {
+            if (!(fe >> matriz[fila][col]))
+            {
+                break;
+            }
+        }
+    }
+    fe.close();
 
     if (arg[0] == false) // --ignore-naive
     {
         int camino_naive = maze_naive(matriz, n, m);
-
         if (camino_naive >= MAX)
         {
             cout << "0 ";
@@ -269,11 +394,9 @@ int main(int argc, char *argv[])
     }
 
     // Impresión de resultados
-
+    
     vector<vector<int>> memo(n, vector<int>(m, -1));
-
     int camino_memo_r = maze_memo(matriz, memo, n, m);
-
     if (camino_memo_r >= MAX)
     {
         cout << "0 ";
@@ -283,7 +406,12 @@ int main(int argc, char *argv[])
         cout << camino_memo_r << " ";
     }
 
-    cout << "? ?" << endl;
+    vector<vector<int>> almacen(n, vector<int>(m, -2));
+    int camino_iter_m = maze_it_matrix(matriz, almacen, n, m);
+    cout << camino_iter_m << " ";
+
+    int camino_iter_v = maze_it_vector(matriz, n, m);
+    cout << camino_iter_v << endl;
 
     if (arg[1] == true) // --p2D
     {
@@ -292,9 +420,11 @@ int main(int argc, char *argv[])
 
     if (arg[2] == true) // -t
     {
-        // cout << "Memoization table:" << endl;
-        // maze_parser(matriz, memo, n, m, 1);
-        cout << "?" << endl;
+        cout << "Memoization table:" << endl;
+        maze_parser(matriz, memo, n, m, 1);
+
+        cout << "Iterative table:" << endl;
+        maze_parser(matriz, almacen, n, m, 1);
     }
 
     return 0;
